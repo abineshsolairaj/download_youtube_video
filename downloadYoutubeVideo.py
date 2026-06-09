@@ -1,11 +1,37 @@
-import os
-from pytube import YouTube, Playlist
+from pathlib import Path
 
-youtubeURL = input("Enter the youtube url here: ")
-video = YouTube(youtubeURL)
-video.streams.get_highest_resolution().download()
+from pytubefix import YouTube
+from pytubefix.exceptions import PytubeFixError
 
 
-# Replace the lines 272, 273 with the following line in cipher.py of pytube
-# r'a\.[a-zA-Z]\s*&&\s*\([a-z]\s*=\s*a\.get\("n"\)\)\s*&&.*?\|\|\s*([a-z]+)',
-# r'\([a-z]\s*=\s*([a-zA-Z0-9$]+)(\[\d+\])?\([a-z]\)',
+def download_video(url: str, output_dir: str = ".") -> Path:
+    yt = YouTube(url)
+    stream = yt.streams.get_highest_resolution()
+    if stream is None:
+        raise RuntimeError("No downloadable stream found for this video.")
+
+    print(f"Downloading: {yt.title}")
+    file_path = stream.download(output_path=output_dir)
+    return Path(file_path)
+
+
+def main() -> None:
+    url = input("Enter the youtube url here: ").strip()
+    if not url:
+        print("No URL provided. Exiting.")
+        return
+
+    try:
+        path = download_video(url)
+    except PytubeFixError as exc:
+        print(f"Failed to download video: {exc}")
+        return
+    except Exception as exc:
+        print(f"Unexpected error: {exc}")
+        return
+
+    print(f"Saved to: {path}")
+
+
+if __name__ == "__main__":
+    main()
