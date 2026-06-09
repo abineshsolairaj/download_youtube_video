@@ -60,13 +60,22 @@ The original script used [`pytube`](https://github.com/pytube/pytube), which is 
 - **No video downloaded but no error printed** — no progressive stream was available for that video. Higher-resolution YouTube videos sometimes split video and audio into separate streams; this script intentionally sticks to a single progressive stream for simplicity.
 - **`ModuleNotFoundError: No module named 'pytubefix'`** — run `pip install -r requirements.txt` inside the right environment.
 
+## Running the tests
+
+Unit tests use `unittest` and mock the network — no real download is required:
+
+```bash
+python -m unittest test_downloadYoutubeVideo -v
+```
+
 ## Project structure
 
 ```
 .
-├── downloadYoutubeVideo.py   # entry point
-├── requirements.txt          # Python dependencies
-├── README.md                 # this file
+├── downloadYoutubeVideo.py        # entry point
+├── test_downloadYoutubeVideo.py   # unit tests
+├── requirements.txt               # Python dependencies
+├── README.md                      # this file
 └── .gitignore
 ```
 
